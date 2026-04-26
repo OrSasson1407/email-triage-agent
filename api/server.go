@@ -45,11 +45,11 @@ func (s *Server) routes() {
 	s.mux.HandleFunc("/dashboard", s.authMiddleware(s.handleDashboard))
 }
 
-// Start launches the HTTP server
+// Start launches the HTTP server — called from main.go
 func Start(cfg config.Config, logger *zap.Logger) error {
 	addr := fmt.Sprintf(":%s", cfg.APIPort)
 	logger.Info("API server listening", zap.String("addr", addr))
-	return http.ListenAndServe(addr, nil)
+	return http.ListenAndServe(addr, http.DefaultServeMux)
 }
 
 // handleHealth — public, no auth needed
@@ -113,10 +113,14 @@ func (s *Server) handleDashboard(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(dashboardHTML))
 }
 
-// authMiddleware checks X-API-Secret header
+// authMiddleware checks X-API-Secret header or ?secret= query param
 func (s *Server) authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Header.Get("X-API-Secret") != s.cfg.APISecret {
+		secret := r.Header.Get("X-API-Secret")
+		if secret == "" {
+			secret = r.URL.Query().Get("secret")
+		}
+		if secret != s.cfg.APISecret {
 			http.Error(w, "unauthorized", http.StatusUnauthorized)
 			return
 		}

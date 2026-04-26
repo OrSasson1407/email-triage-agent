@@ -1,4 +1,4 @@
-﻿package ai
+package ai
 
 import (
 	"context"
@@ -57,7 +57,7 @@ func NewClassifier(cfg config.Config, logger *zap.Logger) (*Classifier, error) {
 		},
 	}
 
-	// VIP senders — always treated as HIGH priority
+	// VIP senders ג€” always treated as HIGH priority
 	vipList := map[string]bool{}
 	if vips := cfg.VIPSenders; vips != "" {
 		for _, v := range strings.Split(vips, ",") {
@@ -80,9 +80,9 @@ func (c *Classifier) Classify(ctx context.Context, email gmail.Email, threadCtx 
 	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	// VIP fast path — skip Gemini, force HIGH urgency
+	// VIP fast path ג€” skip Gemini, force HIGH urgency
 	if c.cfg.EnableVIPFastPath && c.isVIP(email.From) {
-		c.logger.Info("VIP fast path", zap.String("from", email.From))
+		if c.logger != nil { c.logger.Info("VIP fast path", zap.String("from", email.From)) }
 		return Classification{
 			Urgency:    "HIGH",
 			Topic:      "vip",
@@ -112,12 +112,12 @@ func (c *Classifier) Classify(ctx context.Context, email gmail.Email, threadCtx 
 		return Classification{}, fmt.Errorf("unmarshal classification: %w", err)
 	}
 
-	c.logger.Info("Classified email",
+	if c.logger != nil { c.logger.Info("Classified email",
 		zap.String("id", email.ID),
 		zap.String("urgency", result.Urgency),
 		zap.String("topic", result.Topic),
 		zap.Float64("confidence", result.Confidence),
-	)
+	) }
 
 	return result, nil
 }

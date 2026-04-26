@@ -2,6 +2,7 @@ package store_test
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"testing"
 
@@ -57,7 +58,7 @@ func TestMemoryStore_MultipleIDs(t *testing.T) {
 	ctx := context.Background()
 	ids := []string{"id-1", "id-2", "id-3", "id-4", "id-5"}
 
-	// Mark odd ones
+	// Mark odd-indexed ones
 	for i, id := range ids {
 		if i%2 == 0 {
 			require.NoError(t, s.MarkProcessed(ctx, id))
@@ -137,7 +138,6 @@ func TestNew_ReturnsMemoryStore_WhenRedisURLIsMemory(t *testing.T) {
 	s := store.New(cfg)
 	defer s.Close()
 
-	// Should work without any Redis config
 	ctx := context.Background()
 	err := s.MarkProcessed(ctx, "test-id")
 	assert.NoError(t, err)
@@ -145,7 +145,7 @@ func TestNew_ReturnsMemoryStore_WhenRedisURLIsMemory(t *testing.T) {
 
 func TestNew_ReturnsMemoryStore_WhenUpstashURLEmpty(t *testing.T) {
 	cfg := config.Config{
-		UpstashRedisURL: "", // empty — fallback to memory
+		UpstashRedisURL: "",
 	}
 	s := store.New(cfg)
 	defer s.Close()

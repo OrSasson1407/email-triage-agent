@@ -1,4 +1,6 @@
-﻿// Run once to generate your Gmail OAuth refresh token
+//go:build ignore
+
+// Run once to generate your Gmail OAuth refresh token
 // Usage: go run scripts/setup_oauth.go
 package main
 

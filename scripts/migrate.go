@@ -1,4 +1,6 @@
-﻿// Run once to create all required PostgreSQL tables
+//go:build ignore
+
+// Run once to create all required PostgreSQL tables
 // Usage: go run scripts/migrate.go
 package main
 

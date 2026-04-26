@@ -40,6 +40,10 @@ type Config struct {
 	SMTPPass        string
 	DigestRecipient string
 
+	// VIP senders
+	VIPSenders     string
+	VIPSendersFile string
+
 	// Scheduler
 	PollInterval    string
 	MaxEmailsPerRun int
@@ -89,6 +93,9 @@ func Load() (Config, error) {
 		SMTPUser:        os.Getenv("SMTP_USER"),
 		SMTPPass:        os.Getenv("SMTP_PASS"),
 		DigestRecipient: os.Getenv("DIGEST_RECIPIENT"),
+
+		VIPSenders:     os.Getenv("VIP_SENDERS"),
+		VIPSendersFile: os.Getenv("VIP_SENDERS_FILE"),
 
 		PollInterval:    getOr("POLL_INTERVAL", "@every 48m"),
 		MaxEmailsPerRun: intOr("MAX_EMAILS_PER_RUN", 40),
