@@ -1,0 +1,10 @@
+﻿.env
+*.env
+/email-triage-agent
+*.exe
+*.out
+credentials.json
+token.json
+.vscode/
+.idea/
+.DS_Store
